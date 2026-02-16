@@ -7,14 +7,25 @@ import hashlib
 import json
 from pathlib import Path
 from typing import List, Dict
-from openai import OpenAI
+try:
+    import google.generativeai as genai
+    GOOGLE_AVAILABLE = True
+except ImportError:
+    GOOGLE_AVAILABLE = False
+    
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+    
 from config.settings import settings
 from utils.logger import logger
 import tiktoken
 
 
 class EmbeddingGenerator:
-    """Generate and cache embeddings for text chunks."""
+    """Generate and cache embeddings for text chunks using Google Gemini."""
     
     def __init__(self, model: str = None):
         """
@@ -24,24 +35,39 @@ class EmbeddingGenerator:
             model: Embedding model to use (defaults to settings.embedding_model)
         """
         self.model = model or settings.embedding_model
+        self.use_google = GOOGLE_AVAILABLE and settings.google_api_key
         self.client = None
         self.cache_dir = settings.get_base_path() / "data" / "embeddings_cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize tokenizer for chunk size estimation
         try:
-            self.tokenizer = tiktoken.encoding_for_model(self.model)
-        except:
             self.tokenizer = tiktoken.get_encoding("cl100k_base")
+        except:
+            self.tokenizer = None
         
-        logger.info(f"Initialized embedding generator with model: {self.model}")
+        provider = "Google Gemini" if self.use_google else "OpenAI (fallback)"
+        logger.info(f"Initialized embedding generator with {provider}, model: {self.model}")
     
     def _init_client(self):
-        """Lazy initialize OpenAI client."""
+        """Lazy initialize Google Gemini or OpenAI client."""
         if not self.client:
-            if not settings.openai_api_key:
-                raise ValueError("OpenAI API key not configured. Please set OPENAI_API_KEY in .env file")
-            self.client = OpenAI(api_key=settings.openai_api_key)
+            if self.use_google:
+                # Use Google Gemini
+                if not settings.google_api_key:
+                    raise ValueError("Google API key not configured. Please set GOOGLE_API_KEY in .env file")
+                genai.configure(api_key=settings.google_api_key)
+                self.client = "gemini"  # Flag indicating Google client is configured
+                logger.info("Using Google Gemini for embeddings")
+            elif OPENAI_AVAILABLE:
+                # Fallback to OpenAI
+                if not settings.openai_api_key:
+                    raise ValueError("No API keys configured. Please set GOOGLE_API_KEY or OPENAI_API_KEY in .env file")
+                self.client = OpenAI(api_key=settings.openai_api_key)
+                logger.info("Falling back to OpenAI for embeddings")
+            else:
+                raise ValueError("No embedding providers available. Install google-generativeai or openai package.")
+    
     
     def generate_embeddings(self, texts: List[str], use_cache: bool = True) -> List[List[float]]:
         """
@@ -78,20 +104,37 @@ class EmbeddingGenerator:
             logger.info(f"Generating {len(texts_to_embed)} embeddings ({len(texts) - len(texts_to_embed)} cached)")
             
             try:
-                response = self.client.embeddings.create(
-                    model=self.model,
-                    input=texts_to_embed
-                )
-                
-                # Insert generated embeddings at correct positions
-                for idx, embedding_obj in enumerate(response.data):
-                    original_idx = text_indices[idx]
-                    embedding = embedding_obj.embedding
-                    embeddings[original_idx] = embedding
+                if self.use_google and self.client == "gemini":
+                    # Use Google Gemini
+                    for idx, text in enumerate(texts_to_embed):
+                        result = genai.embed_content(
+                            model=self.model,
+                            content=text,
+                            task_type="retrieval_document"
+                        )
+                        embedding = result['embedding']
+                        original_idx = text_indices[idx]
+                        embeddings[original_idx] = embedding
+                        
+                        # Cache the embedding
+                        if use_cache:
+                            self._cache_embedding(text, embedding)
+                else:
+                    # Use OpenAI fallback
+                    response = self.client.embeddings.create(
+                        model=self.model,
+                        input=texts_to_embed
+                    )
                     
-                    # Cache the embedding
-                    if use_cache:
-                        self._cache_embedding(texts_to_embed[idx], embedding)
+                    # Insert generated embeddings at correct positions
+                    for idx, embedding_obj in enumerate(response.data):
+                        original_idx = text_indices[idx]
+                        embedding = embedding_obj.embedding
+                        embeddings[original_idx] = embedding
+                        
+                        # Cache the embedding
+                        if use_cache:
+                            self._cache_embedding(texts_to_embed[idx], embedding)
                 
             except Exception as e:
                 logger.error(f"Error generating embeddings: {e}")

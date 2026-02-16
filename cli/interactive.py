@@ -26,9 +26,14 @@ class InteractiveCLI:
         self.running = True
         
         console.print(Panel.fit(
-            "[bold blue]Conductor Super Agent[/bold blue]\n"
-            "Multi-platform AI conversation assistant",
-            border_style="blue"
+            "[bold cyan]Conductor AI Super Agent[/bold cyan]\n"
+            "[dim]Multi-Model Intelligent Assistant[/dim]\n\n"
+            "Available Providers:\n"
+            "• [green]Google Gemini[/green] (Primary)\n"
+            "• [blue]Grok / xAI[/blue]\n"
+            "• [yellow]Perplexity[/yellow]\n"
+            "• [white]OpenAI[/white]",
+            border_style="cyan"
         ))
         
         # Show database stats
@@ -93,6 +98,11 @@ class InteractiveCLI:
                 self._search_platform(platform, query)
             else:
                 console.print("[red]Usage: /platform <platform> <query>[/red]")
+        elif cmd.startswith('/skill '):
+            skill_name = command[7:].strip()
+            self._activate_skill(skill_name)
+        elif cmd == '/skills':
+            self._list_skills()
         elif cmd == '/clear':
             console.clear()
             self._show_stats()
@@ -112,6 +122,10 @@ class InteractiveCLI:
 - `/search <query>` - Search conversations
 - `/code <query>` - Search code snippets
 - `/platform <name> <query>` - Search specific platform (chatgpt, gemini, grok, antigravity)
+
+## Superpower Skills (NEW)
+- `/skills` - List available skills (brainstorming, TDD, etc.)
+- `/skill <name>` - Activate a superpower skill
 
 ## Utility Commands
 - `/stats` - Show database statistics
@@ -234,6 +248,27 @@ How did I implement authentication before?
             ))
             console.print()
     
+    def _list_skills(self):
+        """List available skills."""
+        skills = self.conductor.skill_manager.list_skills()
+        if not skills:
+            console.print("[yellow]No skills loaded.[/yellow]")
+            return
+
+        console.print("\n[bold]Available Superpowers:[/bold]")
+        for skill in skills:
+            console.print(f"• [cyan]{skill.name}[/cyan]: {skill.description[:100]}...")
+        console.print()
+
+    def _activate_skill(self, name: str):
+        """Activate a skill."""
+        success = self.conductor.activate_skill(name)
+        if success:
+            console.print(f"\n[green]Activated Superpower: {name}[/green]\n")
+        else:
+            console.print(f"\n[red]Skill not found: {name}[/red]")
+            console.print("Type /skills to see available options.\n")
+
     def _exit(self):
         """Exit the CLI."""
         console.print("\n[bold blue]👋 Goodbye![/bold blue]\n")

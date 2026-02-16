@@ -11,11 +11,24 @@ A local-first AI system that aggregates conversations from **Grok**, **ChatGPT**
 - **Privacy First**: Runs 100% locally on your machine
 - **Rich CLI Interface**: Beautiful terminal interface with search and filtering
 
-## 📋 Prerequisites
+## 🚀 Quick Start (Windows)
 
-- Python 3.9+
-- OpenAI API key (for embeddings and conductor LLM)
-- Exported conversation data from AI platforms
+**Double-click `Start_Super_Agent.bat` on your Desktop.**
+
+This will:
+
+1. Auto-configure the environment
+2. Install any missing dependencies (self-healing)
+3. Launch the Multi-AI Super Agent interface
+
+---
+
+## 🤖 Supported Providers
+
+- **Google Gemini** (Primary, Auto-configured)
+- **Grok / xAI** (Added via Desktop key)
+- **Perplexity** (Search enabled)
+- **OpenAI** (Fallback)
 
 ## 🚀 Quick Start
 
@@ -43,6 +56,7 @@ OPENAI_API_KEY=sk-your-key-here
 ### 3. Export Your Conversations
 
 #### ChatGPT
+
 1. Go to [chat.openai.com](https://chat.openai.com)
 2. Click your profile → Settings → Data Controls
 3. Click "Export Data"
@@ -50,6 +64,7 @@ OPENAI_API_KEY=sk-your-key-here
 5. Extract `conversations.json`
 
 #### Gemini
+
 - **Method 1**: Use [Google Takeout](https://takeout.google.com)
   - Select "Gemini Apps Activity"
   - Download and extract
@@ -58,10 +73,13 @@ OPENAI_API_KEY=sk-your-key-here
   - Right-click → Save As → HTML
 
 #### Grok/xAI
+
 - Export from Grok settings (ZIP format)
 
 #### Antigravity
+
 - Conversations are automatically available at:
+
   ```
   C:\Users\<username>\.gemini\antigravity\brain
   ```
@@ -90,21 +108,25 @@ python -m cli.interactive
 ## 💡 Usage Examples
 
 ### Basic Search
+
 ```
 You: How did I implement authentication in previous projects?
 ```
 
 ### Search Code
+
 ```
 You: /code python async patterns
 ```
 
 ### Platform-Specific Search
+
 ```
 You: /platform chatgpt explain RAG architecture
 ```
 
 ### View Statistics
+
 ```
 You: /stats
 ```
@@ -183,15 +205,18 @@ ANTIGRAVITY_BRAIN_DIR=C:/Users/jjc29/.gemini/antigravity/brain
 ## 🛠️ Troubleshooting
 
 ### "No relevant conversations found"
+
 - Ensure you've run `ingest.py` to load your data
 - Check that your export files are in the correct format
 - Run `/stats` to verify database has content
 
 ### API Key Errors
+
 - Verify `OPENAI_API_KEY` is set in `.env`
 - Ensure the key has sufficient credits
 
 ### Import Errors
+
 - Run `pip install -r requirements.txt`
 - Ensure Python 3.9+ is installed
 

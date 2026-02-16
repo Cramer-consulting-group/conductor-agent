@@ -3,6 +3,14 @@ Main data ingestion script.
 Processes all platform exports and loads them into the vector store.
 """
 
+import sys
+import io
+
+# Force UTF-8 encoding for Windows console
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
 import argparse
 from pathlib import Path
 from data_processors.chatgpt_processor import ChatGPTProcessor

@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     openai_api_key: Optional[str] = None
     anthropic_api_key: Optional[str] = None
     google_api_key: Optional[str] = None
+    perplexity_api_key: Optional[str] = None
+    xai_api_key: Optional[str] = None
     
     # Model Configuration
     conductor_model: str = "gpt-4o-mini"
