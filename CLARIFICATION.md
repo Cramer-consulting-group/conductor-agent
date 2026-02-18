@@ -12,7 +12,7 @@
 
 I (Antigravity/Gemini) built you a **LOCAL TOOL** called the **Conductor Agent**. Think of it like this:
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │  YOU (the human)                                │
 │                                                 │
@@ -44,14 +44,16 @@ I (Antigravity/Gemini) built you a **LOCAL TOOL** called the **Conductor Agent**
 
 ## What You CAN Do
 
-### ✅ The Conductor Agent CAN:
+### ✅ The Conductor Agent CAN
+
 - Read your **exported** ChatGPT conversations (you download them once)
 - Read your **exported** Grok conversations (you download them once)
 - Read your **exported** Gemini conversations (you download them once)
 - Read your **existing** Antigravity conversations (already on your computer)
 - Let you search and ask questions about ALL of them in ONE place
 
-### ❌ The Conductor Agent CANNOT:
+### ❌ The Conductor Agent CANNOT
+
 - Talk to me (Antigravity) in real-time
 - Talk to ChatGPT in real-time
 - Talk to NotebookLM
@@ -75,15 +77,18 @@ They're NOT connected. They're two separate tools that do similar things.
 You have **OpenAI** access. That's ALL you need! Here's what to do:
 
 ### Step 1: Get Your OpenAI API Key
-1. Go to https://platform.openai.com/api-keys
+
+1. Go to <https://platform.openai.com/api-keys>
 2. Log in
 3. Click "Create new secret key"
 4. Copy the key (starts with `sk-proj-...`)
 
 ### Step 2: I'll Set It Up For You
+
 Just give me the API key and I'll configure everything.
 
 ### Step 3: Test It
+
 We'll run the ingestion and test the CLI.
 
 ---
@@ -94,6 +99,7 @@ We'll run the ingestion and test the CLI.
 **This is about having ONE tool to search ALL your past AI conversations.**
 
 Think of it like:
+
 - Google Photos = all your photos in one place
 - Conductor Agent = all your AI conversations in one place
 
