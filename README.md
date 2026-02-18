@@ -49,7 +49,7 @@ copy .env.example .env
 
 Edit `.env` and add your OpenAI API key:
 
-```bash
+```
 OPENAI_API_KEY=sk-your-key-here
 ```
 
@@ -80,7 +80,7 @@ OPENAI_API_KEY=sk-your-key-here
 
 - Conversations are automatically available at:
 
-  ```text
+  ```
   C:\Users\<username>\.gemini\antigravity\brain
   ```
 
@@ -109,31 +109,31 @@ python -m cli.interactive
 
 ### Basic Search
 
-```text
+```
 You: How did I implement authentication in previous projects?
 ```
 
 ### Search Code
 
-```text
+```
 You: /code python async patterns
 ```
 
 ### Platform-Specific Search
 
-```text
+```
 You: /platform chatgpt explain RAG architecture
 ```
 
 ### View Statistics
 
-```text
+```
 You: /stats
 ```
 
 ## 📁 Project Structure
 
-```text
+```
 conductor_agent/
 ├── config/              # Configuration management
 │   └── settings.py
@@ -184,7 +184,7 @@ ANTIGRAVITY_BRAIN_DIR=C:/Users/jjc29/.gemini/antigravity/brain
 ## 🎨 CLI Commands
 
 | Command | Description |
-| :--- | :--- |
+|---------|-------------|
 | `<query>` | Ask any question |
 | `/search <query>` | Search conversations |
 | `/code <query>` | Search code snippets |

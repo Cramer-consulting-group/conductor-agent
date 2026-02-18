@@ -2,7 +2,7 @@
 
 ## What You Want (and you're 100% right to want this)
 
-```text
+```
 ┌─────────────────────────────────────┐
 │  MOBILE APP                         │
 │  - Push button                      │
@@ -17,13 +17,11 @@
 ## What We Currently Have
 
 ### ✅ CONDUCTOR AGENT (Local PC)
-
 - Stores ALL your conversation history
 - Can answer questions about past conversations
 - **BUT**: Text-only, runs on your computer
 
 ### ✅ GEMINI MOBILE APP (Already Exists!)
-
 - Voice chat (exactly what you want)
 - Great voice options
 - **BUT**: Doesn't have your conductor agent's memory
@@ -33,8 +31,7 @@
 
 ### PATH 1: Quick Start (Use NOW - 5 minutes)
 
-### Use Gemini Mobile App for Voice
-
+**Use Gemini Mobile App for Voice**
 1. Download "Gemini" app on your phone
 2. Sign in with Google account
 3. Talk to it with voice
@@ -46,10 +43,9 @@
 
 ### PATH 2: Full Solution (What You Really Want - 2-4 hours of work)
 
-### Build a Voice-Enabled Web App + Mobile Interface
+**Build a Voice-Enabled Web App + Mobile Interface**
 
 This would give you:
-
 - ✅ Voice input/output
 - ✅ Access to conductor agent's memory
 - ✅ Persistent conversations
@@ -57,13 +53,11 @@ This would give you:
 - ✅ Never starts over
 
 **What needs to be built:**
-
 1. **Web API** (FastAPI backend) - I can build this
 2. **Web UI** with voice (use OpenAI Whisper + TTS) - I can build this
 3. **Mobile-responsive** so it works on your phone - I can build this
 
 **You'd have:**
-
 - A web app at `http://localhost:8000` (or deployed to cloud)
 - Open it on your phone's browser
 - Tap microphone → talk → get voice response
@@ -73,14 +67,12 @@ This would give you:
 
 ## 🎯 RECOMMENDED: Do Both
 
-### IMMEDIATE (Do This Now)
-
+### IMMEDIATE (Do This Now):
 1. Download **Gemini mobile app**
 2. Use it for voice chat while I build the full solution
 3. It's free, works great, has voice
 
-### NEXT (I'll Build This)
-
+### NEXT (I'll Build This):
 1. I'll create a web interface for the conductor agent
 2. Add voice input (OpenAI Whisper)
 3. Add voice output (OpenAI TTS)
@@ -89,7 +81,7 @@ This would give you:
 
 ---
 
-### Step-by-Step: Get Gemini App NOW
+## 📱 Step-by-Step: Get Gemini App NOW
 
 1. **On your phone**: Open App Store (iPhone) or Play Store (Android)
 2. **Search**: "Gemini"
@@ -98,7 +90,6 @@ This would give you:
 5. **Tap microphone**: Start talking!
 
 **Voice Options in Gemini:**
-
 - Go to Settings → Voice
 - Choose from multiple voices (including female voices)
 - Adjust speed and tone
@@ -108,7 +99,6 @@ This would give you:
 ## 🛠️ What I'll Build (If You Want)
 
 ### Option A: Simple Voice Web App
-
 - Web page with big microphone button
 - Tap → Speak → Get voice response
 - Connected to conductor agent
@@ -116,7 +106,6 @@ This would give you:
 - **Cost**: Free (uses OpenAI API you already have)
 
 ### Option B: Full Mobile PWA (Progressive Web App)
-
 - Installable on phone like a native app
 - Works offline after installed
 - Push notifications
@@ -125,7 +114,6 @@ This would give you:
 - **Cost**: Free (same OpenAI API)
 
 ### Option C: Build & Deploy to Cloud
-
 - Host on cloud (Render, Railway, etc.)
 - Access from anywhere
 - Custom domain (youragent.com)
@@ -141,7 +129,6 @@ This would give you:
 **RESULT**: Voice-enabled AI that remembers everything
 
 **Which do you want me to build?**
-
 - [ ] Option A: Simple voice web app
 - [ ] Option B: Full mobile PWA
 - [ ] Option C: Cloud-deployed with custom domain

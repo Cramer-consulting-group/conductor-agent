@@ -9,7 +9,7 @@ This directory contains all data for the conductor agent:
 
 ## Directory Structure
 
-```text
+```
 data/
 ├── raw/
 │   ├── chatgpt_conversations.json

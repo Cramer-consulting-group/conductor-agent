@@ -3,18 +3,14 @@
 ## What Was Added
 
 ### 1. **Conductor Agent** (`conductor/agent.py`)
-
 The core conversational AI that:
-
 - **Retrieves context** from your conversation history using semantic search
 - **Generates intelligent responses** using GPT-4o-mini (or your chosen model)
 - **Cites sources** showing which platform and conversation the answer came from
 - **Streams responses** in real-time for better UX
 
 ### 2. **Updated CLI** (`cli/interactive.py`)
-
 Now when you ask a question, instead of just showing search results, the conductor:
-
 1. 🔍 Searches your conversation history
 2. 🧠 Feeds relevant context to the LLM
 3. 💬 Generates a conversational answer
@@ -22,7 +18,7 @@ Now when you ask a question, instead of just showing search results, the conduct
 
 ## How It Works
 
-```text
+```
 You: "What projects have I worked on?"
         ↓
 Conductor retrieves relevant conversations from all platforms
@@ -36,7 +32,7 @@ Cites sources (e.g., "Based on your Antigravity conversation...")
 
 ## Example Interaction
 
-```text
+```
 You: How did I implement authentication in previous projects?
 
 Conductor: Based on your conversation history, you've implemented 
@@ -65,19 +61,16 @@ authentication several times across different projects:
 ## What You Need
 
 1. **OpenAI API Key** in `.env` file:
-
-   ```bash
+   ```
    OPENAI_API_KEY=sk-your-key-here
    ```
 
 2. **Ingest your conversations** first:
-
    ```powershell
    python ingest.py
    ```
 
 3. **Start chatting**:
-
    ```powershell
    python -m cli.interactive
    ```
