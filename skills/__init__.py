@@ -1,3 +1,1 @@
-from .manager import SkillManager, Skill
-
-__all__ = ["SkillManager", "Skill"]
+"""Skills module for the Conductor Agent."""

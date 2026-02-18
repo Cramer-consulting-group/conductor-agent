@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conductor Voice Agent</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/static/icon.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Conductor">
     <link rel="apple-touch-icon" href="/static/icon-192.png">
-    <title>Conductor Voice Agent</title>
+    <link rel="mask-icon" href="/static/icon.svg" color="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="manifest" href="/static/manifest.json">
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
@@ -21,10 +25,11 @@
         }
         
         .glass {
-            background: rgba(255, 255, 255, 0.1);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
         }
         
         .mic-button {
@@ -110,8 +115,8 @@
         </div>
 
         <!-- Microphone Button -->
-        <div class="flex justify-center mb-4">
-            <button id="micButton" class="mic-button w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl">
+        <div class="flex justify-center mb-6">
+            <button id="micButton" class="mic-button w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center text-white text-4xl shadow-2xl hover:brightness-110 active:scale-90 transition-all">
                 🎤
             </button>
         </div>

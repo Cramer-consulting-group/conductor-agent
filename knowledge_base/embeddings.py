@@ -35,7 +35,14 @@ class EmbeddingGenerator:
             model: Embedding model to use (defaults to settings.embedding_model)
         """
         self.model = model or settings.embedding_model
-        self.use_google = GOOGLE_AVAILABLE and settings.google_api_key
+        
+        # Determine provider based on model name
+        is_openai_model = "text-embedding-3" in self.model or "text-embedding-ada" in self.model
+        
+        if is_openai_model:
+            self.use_google = False
+        else:
+            self.use_google = GOOGLE_AVAILABLE and settings.google_api_key
         self.client = None
         self.cache_dir = settings.get_base_path() / "data" / "embeddings_cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)

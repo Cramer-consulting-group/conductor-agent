@@ -1,80 +1,81 @@
 """
-Minimal conductor agent for cloud deployment without ChromaDB.
-This version works without conversation memory - just direct AI access.
+Minimal, dependency-light conductor fallback used in cloud or when no
+AI provider is configured. This provides the same public methods the full
+`ConductorAgent` exposes (`chat`, `stream_chat`, `activate_skill`) but
+does not rely on heavy dependencies like ChromaDB or external SDKs.
+
+The goal is to allow the API/CLI to start and return helpful messages
+when running in constrained environments.
 """
-
-from typing import Dict, Any
-import os
-
-try:
-    import google.generativeai as genai
-    GOOGLE_AVAILABLE = True
-except ImportError:
-    GOOGLE_AVAILABLE = False
-
-try:
-    from openai import OpenAI
-    OPENAI_AVAILABLE = True
-except ImportError:
-    OPENAI_AVAILABLE = False
-
+from pathlib import Path
+from typing import Dict, Any, Iterator
+from skills.manager import SkillManager
 from utils.logger import logger
+from config import settings
 
 
 class MinimalConductor:
-    """Minimal conductor that works without ChromaDB/memory."""
-    
+    """Very small conductor implementation for fallbacks and tests."""
+
     def __init__(self):
-        """Initialize with OpenAI (most reliable for cloud)."""
-        self.provider = "openai"
-        self.model = "gpt-4o-mini"
-        self.client = None
-        
-        # Check if API key is available
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY environment variable required")
-            
-        logger.info(f"Initialized minimal conductor with {self.provider}, model: {self.model}")
-    
-    def _init_client(self):
-        """Initialize OpenAI client."""
-        if not self.client and OPENAI_AVAILABLE:
-            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    
-    def chat(self, query: str, **kwargs) -> Dict[str, Any]:
-        """
-        Simple chat without memory.
-        
-        Args:
-            query: User question
-            **kwargs: Ignored (for compatibility)
-            
-        Returns:
-            Dict with 'response' and empty 'sources'
-        """
-        self._init_client()
-        
-        logger.info(f"Processing query: {query[:100]}...")
-        
-        # Simple system prompt
-        system_prompt = """You are a helpful AI assistant. Answer questions clearly and concisely."""
-        
-        # Call OpenAI
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": query}
-            ],
-            temperature=0.7,
-            max_tokens=1000
+        # Only load skills metadata (no execution runtime required)
+        skills_path = Path(__file__).resolve().parent.parent / "skills"
+        try:
+            self.skill_manager = SkillManager(skills_path)
+        except Exception:
+            self.skill_manager = None
+
+        self.retriever = None
+        self.current_skill = None
+        self.model = "minimal"
+
+        logger.info("Initialized MinimalConductor (no external AI providers)")
+
+    def activate_skill(self, skill_name: str) -> bool:
+        """Activate a skill if available. Returns True on success."""
+        if not self.skill_manager:
+            return False
+
+        skill = self.skill_manager.get_skill(skill_name)
+        if skill:
+            self.current_skill = skill
+            logger.info(f"Activated skill (minimal): {skill.name}")
+            return True
+        return False
+
+    def chat(self, query: str, platform_filter: str = None) -> Dict[str, Any]:
+        """Return a short, helpful response explaining minimal mode."""
+        base = (
+            "Minimal mode: no AI provider configured. "
+            "Set OPENAI_API_KEY, GOOGLE_API_KEY or XAI_API_KEY to enable full-mode."
         )
-        
-        answer = response.choices[0].message.content
-        
+
+        if self.current_skill:
+            # Include skill's brief guidance if a skill is active
+            try:
+                skill_hint = f"\n\nSkill: {self.current_skill.name} - {self.current_skill.description}"
+            except Exception:
+                skill_hint = ""
+        else:
+            skill_hint = ""
+
         return {
-            'response': answer,
-            'sources': [],
-            'context_used': False
+            "response": f"{base}{skill_hint}\n\n(You asked: {query})",
+            "sources": [],
+            "context_used": 0,
+            "model": self.model,
         }
+
+    def stream_chat(self, query: str, platform_filter: str = None) -> Iterator[Dict[str, Any]]:
+        """Yield a minimal stream: first empty sources, then the response in chunks."""
+        # Yield empty sources list first for parity with full conductor
+        yield {"type": "sources", "data": []}
+
+        resp = self.chat(query, platform_filter=platform_filter)["response"]
+
+        # Stream in small chunks
+        chunk_size = 120
+        for i in range(0, len(resp), chunk_size):
+            yield {"type": "content", "data": resp[i : i + chunk_size]}
+
+        return
