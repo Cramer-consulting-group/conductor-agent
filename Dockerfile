@@ -1,28 +1,20 @@
-# Conductor Voice Agent
-# Production deployment with Gunicorn on Cloud Run / Render / Docker
-
 FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8080
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# System deps (keep minimal; add build tools only if needed)
+RUN pip install --no-cache-dir --upgrade pip
 
-COPY requirements.txt .
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir gunicorn
 
 COPY . .
 
-RUN mkdir -p temp_audio logs data/chroma_db
-
-ENV PORT=8080
 EXPOSE 8080
 
-# Shell form so ${PORT} is expanded at runtime (Cloud Run / Render inject PORT).
-CMD exec gunicorn api.server:app \
-    --bind 0.0.0.0:${PORT} \
-    --workers 2 \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --timeout 120
+# IMPORTANT: shell-form so $PORT expands on Cloud Run/Render
+CMD uvicorn api.server:app --host 0.0.0.0 --port ${PORT}
