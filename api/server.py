@@ -43,12 +43,19 @@ app.add_middleware(
 conductor = None
 voice_processor = None
 
+def _is_cloud() -> bool:
+    """True on Cloud Run / Render / Railway / Heroku — skip ChromaDB."""
+    return any(
+        os.getenv(v)
+        for v in ("K_SERVICE", "RENDER", "RAILWAY", "HEROKU")
+    )
+
+
 def get_conductor():
     """Lazy initialization of conductor agent."""
     global conductor
     if conductor is None:
-        # Use minimal conductor in cloud environments (no ChromaDB)
-        is_cloud = os.getenv("RENDER") or os.getenv("RAILWAY") or os.getenv("HEROKU")
+        is_cloud = _is_cloud()
         
         try:
             if is_cloud:
@@ -122,13 +129,31 @@ async def root():
         """
 
 
+@app.on_event("startup")
+async def _startup_log_config():
+    """Log API-key configuration so missing keys are obvious in cloud logs."""
+    providers = settings.configured_providers()
+    if providers:
+        logger.info(f"Configured LLM providers: {', '.join(providers)}")
+    else:
+        logger.warning(
+            "No LLM API key configured. The /api/chat endpoint will fail "
+            "until OPENAI_API_KEY (or another provider key) is set. "
+            "See README -> Deploy."
+        )
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
+    providers = settings.configured_providers()
     return {
         "status": "healthy",
         "service": "conductor-voice-agent",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "mode": "minimal" if _is_cloud() else "full",
+        "providers": providers,
+        "api_keys_configured": bool(providers),
     }
 
 
@@ -329,7 +354,7 @@ if static_dir.exists():
 if __name__ == "__main__":
     import uvicorn
     
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", 8080))
     
     logger.info(f"Starting Conductor Voice Agent on port {port}")
     
