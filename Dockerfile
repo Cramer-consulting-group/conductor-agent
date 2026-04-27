@@ -25,4 +25,4 @@ RUN mkdir -p temp_audio logs data/chroma_db
 EXPOSE 8000
 
 # Run with Gunicorn
-CMD ["gunicorn", "api.server:app", "--bind", "0.0.0.0:8000", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--timeout", "120"]
+CMD gunicorn --bind 0.0.0.0:$PORT api.server:app -k uvicorn.workers.UvicornWorker
