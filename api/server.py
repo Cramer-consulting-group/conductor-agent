@@ -55,7 +55,13 @@ def get_conductor():
     """Lazy initialization of conductor agent."""
     global conductor
     if conductor is None:
-        is_cloud = _is_cloud()
+        # Use minimal conductor in cloud environments (no ChromaDB)
+        is_cloud = (
+            os.getenv("K_SERVICE")  # Cloud Run
+            or os.getenv("RENDER")
+            or os.getenv("RAILWAY")
+            or os.getenv("HEROKU")
+        )
         
         try:
             if is_cloud:
